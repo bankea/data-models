@@ -58,17 +58,17 @@ Note that this script does not enforce dependencies, rather runs the playbooks i
 **Examples:**
 
 ```bash
-bash .scripts/run_config.sh -b ~/pathTo/sql-runner -c web/v1/bigquery/configs/datamodeling.json;
+bash .scripts/run_config.sh -b ~/pathTo/sql-runner -c web/v1/bigquery/sql-runner/configs/datamodeling.json;
 
 # Runs the standard bigquery web model end to end.
 
-bash .scripts/run_config.sh -b ~/pathTo/sql-runner -c web/v1/bigquery/configs/datamodeling.json -d;
+bash .scripts/run_config.sh -b ~/pathTo/sql-runner -c web/v1/bigquery/sql-runner/configs/datamodeling.json -d;
 
 # Dry-runs the standard bigquery web model end to end.
 
-bash .scripts/run_config.sh -b ~/pathTo/sql-runner -c web/v1/bigquery/configs/example_with_custom.json -t -o tmp/sql;
+bash .scripts/run_config.sh -b ~/pathTo/sql-runner -c web/v1/bigquery/sql-runner/configs/example_with_custom.json -t .scripts/templates/bigquery.yml.tmpl -o output/sql;
 
-# Prints pure sql for the bigquery model and example custom steps to files in `tmp/sql` - with all templates filled in.
+# Prints pure sql for the bigquery model and example custom steps to files in `output/sql` - with all templates filled in.
 ```
 
 ## run_test.sh
@@ -109,7 +109,7 @@ bash .scripts/run_test.sh -d bigquery -c perm_tables;
 
 ## e2e.sh
 
-`e2e.sh` runs a single end to end run of a standard model and great expectations tests.  
+`e2e.sh` runs a single end to end run of a standard model and great expectations tests.
 
 We recommend using a virtual environment for python, eg. `pyenv` or `virtualenv` - for example using the latter:
 

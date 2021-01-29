@@ -23,7 +23,7 @@ Variables in each module's playbook can also optionally be configured also. See 
 To run the entire standard model, end to end:
 
 ```bash
-bash .scripts/run_config.sh -b ~/pathTo/sql-runner -c web/v1/bigquery/configs/datamodeling.json;
+bash .scripts/run_config.sh -b ~/pathTo/sql-runner -c web/v1/bigquery/sql-runner/configs/datamodeling.json;
 ```
 
 See the README in the `.scripts/` directory for more details.
