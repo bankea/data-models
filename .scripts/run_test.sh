@@ -16,7 +16,7 @@ do
 done
 
 # set working dir
-root_path=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )/..
+root_path=$( cd "$(dirname "$(dirname "${BASH_SOURCE[0]}")")" && pwd -P )
 cd $root_path/.test
 
 set -e
@@ -30,10 +30,11 @@ if [ "$DATABASE" == "bigquery" ]; then
     # If creds provided via env var or argument, set trap to clean up, then create creds file.
     cleanup() {
       echo "run_test: Removing credentials file"
-      rm -f $root_path/tmp/bq_creds.json
+      rm -rf "${root_path}/tmp"
     }
     trap cleanup EXIT
 
+    mkdir "${root_path}/tmp"
     echo "run_test: writing bq creds to file"
     echo $BIGQUERY_CREDS > $root_path/tmp/bq_creds.json
 

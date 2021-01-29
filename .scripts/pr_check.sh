@@ -16,17 +16,12 @@ done
 
 script_path=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
 
-# Set credentials via env vars
-export BIGQUERY_CREDS=${BIGQUERY_CREDS:-$CREDENTIALS}
-export REDSHIFT_PASSWORD=$CREDENTIALS
-export SNOWFLAKE_PASSWORD=$CREDENTIALS
-
 echo "pr_check: Starting 10 e2e iterations"
 
 for i in {1..10}; do
   echo "pr_check: Starting e2e run $i";
 
-  bash $script_path/e2e.sh -b $SQL_RUNNER_PATH -d $DATABASE || exit 1;
+  bash $script_path/e2e.sh -b $SQL_RUNNER_PATH -d $DATABASE -a $CREDENTIALS || exit 1;
 
   echo "pr_check: e2e run $i Done";
 

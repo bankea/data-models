@@ -22,20 +22,26 @@ do
   esac
 done
 
-root_path=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )/..
+root_path=$( cd "$(dirname "$(dirname "${BASH_SOURCE[0]}")")" && pwd -P )
 
 # Use jq to grab playbooks into a bash array in order of appearance, and database target into a var.
 playbooks=($(cat $CONFIG_PATH | jq -r '.data.playbooks[].playbook | @sh' | tr -d \'))
 target=$(cat $CONFIG_PATH | jq -r '.data.storage')
-model_path="$(dirname "${CONFIG_PATH}")/.."
+model_path=$( cd "$(dirname "$(dirname "${CONFIG_PATH}")")" && pwd -P )
 
 set -e
 
+if [ -d "${root_path}/tmp" ]; then
+    echo 'Error: tmp dir already exists!' 1>&2; exit 1;
+fi
+
 cleanup() {
-  echo "run_config: Removing playbook file"
-  rm -f $root_path/tmp/current_playbook.yml
+  echo "run_config: Removing tmp dir"
+  rm -rf "${root_path}/tmp"
 }
 trap cleanup EXIT
+
+mkdir "${root_path}/tmp"
 
 if [ $target == "Default" ]; then
 
@@ -51,9 +57,8 @@ elif [ "$target" == "BigQuery" ]; then
     # If creds provided via env var or argument, set trap to clean up, then create creds file.
     cleanup() {
       echo "run_config: Removing playbook file"
-      rm -f $root_path/tmp/current_playbook.yml
       echo "run_config: Removing credentials file"
-      rm -f $root_path/tmp/bq_creds.json
+      rm -rf "${root_path}/tmp"
     }
 
     echo "run_config: writing bq creds to file"
@@ -98,7 +103,7 @@ do
 
   # If printing sql to file, comment out metadata strings in the SQL
   if [ ! -z "$OUTPUT_PATH" ]; then
-    sed -E -i '' '/^([0-9]{4}\/(0[1-9]|1[0-2])\/(0[1-9]|[1-2][0-9]|3[0-1]) (2[0-3]|[01][0-9]):[0-5][0-9]:[0-5][0-9] Step name:|Query name: |Query path: )/ s/^/-- /' $OUTPUT_FILE
+    sed -E -i '/^([0-9]{4}\/(0[1-9]|1[0-2])\/(0[1-9]|[1-2][0-9]|3[0-1]) (2[0-3]|[01][0-9]):[0-5][0-9]:[0-5][0-9] Step name:|Query name: |Query path: )/ s/^/-- /' $OUTPUT_FILE
   fi
 
   set -e
